@@ -3,8 +3,7 @@ dotenv.config();
 
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
-
-import { PROD, PASSWORD, USER } from "./constants";
+import { PASSWORD, PORT, PROD, USER } from "./constants";
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 
@@ -14,9 +13,10 @@ export default {
     pattern: /^[\w-]+\d+\.[tj]s$/,
   },
   entities: [Post, User],
-  dbName: "sireddit",
   type: "postgresql",
+  dbName: USER,
   user: USER,
   password: PASSWORD,
   debug: !PROD,
+  port: PORT,
 } as Parameters<typeof MikroORM.init>[0];
