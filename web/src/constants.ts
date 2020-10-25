@@ -1,0 +1,1 @@
+export const SERVER_PORT = process.env.NEXT_PUBLIC_SERVER_PORT;
