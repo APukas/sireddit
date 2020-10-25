@@ -10,18 +10,22 @@ import redis from "redis";
 import cors from "cors";
 
 import mikroOrmConfig from "./mikro-orm.config";
-import { PORT, PROD } from "./constants";
+import { SERVER_PORT, CLIENT_PORT, PROD } from "./constants";
 import { buildSchema } from "type-graphql";
 import { PostResolver } from "./resolvers/Post";
 import { UserResolver } from "./resolvers/User";
+import { MyContext } from "./types";
 
 const main = async () => {
   const orm = await MikroORM.init(mikroOrmConfig);
   await orm.getMigrator().up();
 
   const app = express();
+
   const RedisStore = connectRedis(session);
   const redisClient = redis.createClient();
+
+  app.use(cors({ origin: `http://localhost:${CLIENT_PORT}`, credentials: true }))
 
   app.use(
     session({
@@ -42,21 +46,20 @@ const main = async () => {
     })
   );
 
-  app.use(cors({ origin: "http://localhost:3000", credentials: true }))
 
   const apolloServer = new ApolloServer({
     schema: await buildSchema({
       resolvers: [PostResolver, UserResolver],
       validate: false,
     }),
-    context: { em: orm.em },
+    context: ({ req, res }): MyContext => <MyContext>({ em: orm.em, req, res }),
   });
 
 
   apolloServer.applyMiddleware({ app, cors: false });
 
-  app.listen(PORT, () => {
-    console.log(`Server is running on port: ${PORT}`);
+  app.listen(SERVER_PORT, () => {
+    console.log(`Server is running on port: ${SERVER_PORT}`);
   });
 };
 main().catch((e) => console.error(e));

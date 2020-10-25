@@ -4,7 +4,7 @@ dotenv.config();
 
 import { MikroORM } from "@mikro-orm/core";
 import path from "path";
-import { DBNAME, PASSWORD, PORT, PROD, USER } from "./constants";
+import { PASSWORD, SERVER_PORT, PROD, USER, DB_NAME } from "./constants";
 import { Post } from "./entities/Post";
 import { User } from "./entities/User";
 
@@ -15,9 +15,9 @@ export default {
   },
   entities: [Post, User],
   type: "postgresql",
-  dbName: os.type() === "Linux" ? USER : DBNAME,
+  dbName: os.type() === "Linux" ? USER : DB_NAME,
   user: USER,
   password: PASSWORD,
   debug: !PROD,
-  port: os.type() === "Linux" && PORT
+  port: SERVER_PORT,
 } as Parameters<typeof MikroORM.init>[0];
