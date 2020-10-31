@@ -11,7 +11,7 @@ export const NavBar: React.FC<NavBarProps> = ({ }) => {
     const [{ data, fetching }] = useMeQuery();
     let body = null;
     if (fetching) {
-    } else if (!data.me) {
+    } else if (!data?.me) {
         body = (
             <>
                 <NextLink href="/login">
