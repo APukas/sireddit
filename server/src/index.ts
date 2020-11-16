@@ -10,7 +10,7 @@ import redis from "redis";
 import cors from "cors";
 
 import mikroOrmConfig from "./mikro-orm.config";
-import { SERVER_PORT, CLIENT_PORT, PROD } from "./constants";
+import { SERVER_PORT, CLIENT_PORT, PROD, COOKIE_NAME, SESSION_SECRET } from "./constants";
 import { buildSchema } from "type-graphql";
 import { PostResolver } from "./resolvers/Post";
 import { UserResolver } from "./resolvers/User";
@@ -29,7 +29,7 @@ const main = async () => {
 
   app.use(
     session({
-      name: "qid",
+      name: COOKIE_NAME,
       store: new RedisStore({
         client: redisClient,
         disableTouch: true,
@@ -41,7 +41,7 @@ const main = async () => {
         secure: PROD
       },
       saveUninitialized: false,
-      secret: "qowiueojwojfalksdjoqiwueo",
+      secret: SESSION_SECRET,
       resave: false,
     })
   );
